@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="500px" src="https://github.com/yuanming-hu/taichi/raw/master/misc/logo.png">
+  <img width="500px" src="https://github.com/happynewyear/file/hi2023.png](https://raw.githubusercontent.com/JustYouth/happynewyear.github.io/main/files/hi2023.png">
   </div>
 
 ----------
