@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <!--tip:源码来自开源GITHUB的公开仓库，抓取hi2023.cn时请遵守软件开源协议-->
+    <!--关于网页问题请先发送邮件到roverstudio@qq.com-->
+    <!--让烦恼远离，即使遇到挫折，2023的你也能迎刃而解，加油！相信自己！-->
+    <meta charset="UTF-8">
+    <title>Hi2023</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <style>
+        *{box-sizing: border-box;}
+
+        body{background-color: black;}
+
+        b{margin: 3px;}
+
+        #from{width: 90%; padding-left: 5%;padding-right: 5%;}
+
+        body h1{
+            font-weight: 600;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 2rem;
+            text-align: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body hr{
+            width:50px;
+            border: none;
+            border-bottom: 1px solid rgba(119, 119, 119, 0.25)
+        }
+
+        .content{
+            width: 1100px;
+            margin: 0 auto;
+            padding-top: 30px;
+            background-color: #000000; opacity: 0.9;
+        }
+        .content p{
+            color: #ffffff;
+        }
+        .marginbottom{margin-bottom: 10px;}
+
+        .overlay {
+            /*position: absolute;*/
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            /*height: 30vh;*/
+            z-index: 100;
+            background: white;
+            background: linear-gradient(0deg, white 75%, rgba(255, 255, 255, 0.9) 80%, rgba(255, 255, 255, 0.25) 95%, rgba(255, 255, 255, 0) 100%);
+        }
+        .text {
+            font-family: "Yanone Kaffeesatz";
+            font-size: 100px;
+            display: flex;
+            position: absolute;
+            bottom: 20vh;
+            left: 50%;
+            transform: translateX(-50%);
+            user-select: none;
+            color:#ffffff;
+        }
+        .text .wrapper {
+            padding-left: 20px;
+            padding-right: 20px;
+            padding-top: 20px;
+        }
+        .text .wrapper .shadow {
+            transition: ease-out 1s;
+            transform: translateY(40%);
+        }
+        .text .wrapper .shadow {
+            transform: scale(1, -1);
+            color:#ffffff;
+            transition: ease-in 5s, ease-out 5s;
+        }
+        .text .wrapper:hover .shadow {
+            transform: translateY(-200%);
+        }
+        .text .wrapper:hover .shadow {
+            opacity: 0;
+            transform: translateY(200%);
+        }
+
+    </style>
+</head>
+
+<body >
+<div class="overlay"></div>
+
+<div class="text">
+    <div class="wrapper">
+        <div id="L" class="letter">你</div>
+        <div class="shadow">再</div>
+    </div>
+    <div class="wrapper">
+        <div id="I" class="letter">好</div>
+        <div class="shadow">见</div>
+    </div>
+    <div class="wrapper">
+        <div id="G" class="letter">!</div>
+        <div class="shadow">!</div>
+    </div>
+    <div class="wrapper">
+        <div id="H" class="letter">2</div>
+        <div class="shadow">2</div>
+    </div>
+    <div class="wrapper">
+        <div id="T" class="letter">0</div>
+        <div class="shadow">0</div>
+    </div>
+    <div class="wrapper">
+        <div id="N" class="letter">2</div>
+        <div class="shadow">2</div>
+    </div>
+    <div class="wrapper">
+        <div id="E" class="letter">3</div>
+        <div class="shadow">2</div>
+    </div>
+    <div class="wrapper">
+        <div id="S" class="letter">!</div>
+        <div class="shadow">!</div>
+    </div>
+</div>
+
+<div class="container" id="app">
+
+    <div class="content" >
+        <div id="from">
+            <p>今<b>天</b>已经过去了 大约 {{hour}}小时</p>
+            <div v-html="jinduT()" class="marginbottom"></div>
+
+            <p>本<b>周</b>已经过去了  {{week}}天</p>
+            <div v-html="jinduZ()" class="marginbottom"></div>
+
+            <p>这个<b>月</b>已经过去了 {{day}}天</p>
+            <div v-html="jinduD()" class="marginbottom"></div>
+
+            <p>{{year}}<b>年</b>已经过去了 {{month}}个月     度过了{{outday}}天</p>  <!--{{year}}-->
+            <div v-html="jinduY()" class="marginbottom"></div>
+        </div>
+        <br>
+        <br>
+    </div>
+
+
+</div>
+<hr>
+<script>
+
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            year:"",
+            month:"",
+            day:"",
+            time:"",
+            hour:"",
+            minute:"",
+            sec:"",
+            week:"",
+            outday:""
+        },
+        created: function () {//定时器
+            this.timer();
+            setInterval(this.timer, 60000);
+        },
+        methods: {// 我的理解是方法区和数据区
+            timer: function() {
+                var myDate = new Date();
+                var myYear = myDate.getFullYear(); //年份
+                var myMonth = myDate.getMonth() +1; //月份
+                var myDay = myDate.getDate(); //日（1- 31）
+                var myHours = myDate.getHours(); //小时(0-23)
+                var myMinu = myDate.getMinutes(); //分钟(0-59)
+                var mySec = myDate.getSeconds(); //秒(0-59)
+                var myWeek = myDate.getDay(); //星期
+
+                this.hour = myHours;
+                this.year = myYear;
+                this.month = myMonth-1;
+                this.day = myDay-1;
+                this.week = myWeek-1;
+                this.minute = myMinu;
+            },
+            //今天
+            jinduT:function(){
+                var tian = ((this.hour*60+this.minute)/24/60*100).toFixed(1); // + "%"
+                var color = this.jinduColor(tian);
+                return "<div class='progress'> <div class='progress-bar "+ color +" progress-bar-striped progress-bar-animated' style='width:"+ tian +"%'>"+tian+"</div> </div>";
+            },
+            //本周
+            jinduZ:function(){
+                var curdayWithHour = (this.week*24*60+this.hour*60+this.minute)/7/24/60;
+                var zhou = (curdayWithHour*100).toFixed(1);
+                var color = this.jinduColor(zhou);
+                return "<div class='progress'> <div class='progress-bar "+ color +" progress-bar-striped progress-bar-animated' style='width:"+ zhou +"%'>"+zhou+"</div> </div>";
+            },
+            //这个月
+            jinduD:function(){
+                var days=new Date(this.year,this.month+1,0).getDate();
+                var yue = ((this.day*24*60+this.hour*60+this.minute)/days/24/60*100).toFixed(1);  //js如何得到这个月具体多少天
+                var color = this.jinduColor(yue);
+                return "<div class='progress'> <div class='progress-bar "+ color +" progress-bar-striped progress-bar-animated"+ color +"' style='width:"+ yue +"%'>"+yue+"</div> </div>";
+            },
+            //年
+            jinduY:function(){
+                var olddate = new Date(this.year, 0);
+                var nowdate = new Date(this.year,this.month,this.day+1);
+                var outday = (nowdate - olddate) / (1000 * 60 * 60 * 24) + 1;//
+                this.outday = outday;//已经过去天数
+
+                var isLeap = (0===this.year%4) && (0===this.year%100) || (0===this.year%400);
+                var days = isLeap ? 366 : 365;//今年的天数
+                var ye = (((outday-1)*24*60 + this.hour*60+ this.minute)/days/24/60*100).toFixed(1);
+                var color = this.jinduColor(ye);
+                return "<div class='progress'> <div class='progress-bar "+ color +" progress-bar-striped progress-bar-animated"+ color +"' style='width:"+ ye +"%'>"+ye+"</div> </div>";
+            },
+            jinduColor: function (value) {
+                if (value >= 90) {
+                    return 'bg-danger';
+                }else if(value >= 60 && value<90){
+                    return 'bg-warning';
+                }else if(value >= 20 && value<60){
+                    return 'bg-primary';
+                }else {
+                    return 'bg-danger';
+                }
+
+            }
+        }
+    })
+</script>
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?c279faf8ac03a8c441213fb123b989f3";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</body>
+</html>
